@@ -5,6 +5,7 @@ part of excel;
 class CellStyle extends Equatable {
   String _fontColorHex = 'FF000000', _backgroundColorHex = 'none';
   String? _fontFamily;
+  String? _numFormat;
   HorizontalAlign _horizontalAlign = HorizontalAlign.Left;
   VerticalAlign _verticalAlign = VerticalAlign.Bottom;
   TextWrapping? _textWrapping;
@@ -18,6 +19,7 @@ class CellStyle extends Equatable {
     String backgroundColorHex = 'none',
     int? fontSize,
     String? fontFamily,
+    String? numFormat,
     HorizontalAlign horizontalAlign = HorizontalAlign.Left,
     VerticalAlign verticalAlign = VerticalAlign.Bottom,
     TextWrapping? textWrapping,
@@ -36,6 +38,8 @@ class CellStyle extends Equatable {
 
     _fontFamily = fontFamily;
 
+    _numFormat = numFormat;
+
     _rotation = rotation;
 
     _fontColorHex = _isColorAppropriate(fontColorHex);
@@ -51,6 +55,8 @@ class CellStyle extends Equatable {
     String? fontColorHexVal,
     String? backgroundColorHexVal,
     String? fontFamilyVal,
+    String? numFormat,
+    String? numFormatID,
     HorizontalAlign? horizontalAlignVal,
     VerticalAlign? verticalAlignVal,
     TextWrapping? textWrappingVal,
@@ -64,6 +70,7 @@ class CellStyle extends Equatable {
       fontColorHex: fontColorHexVal ?? this._fontColorHex,
       backgroundColorHex: backgroundColorHexVal ?? this._backgroundColorHex,
       fontFamily: fontFamilyVal ?? this._fontFamily,
+      numFormat: this._numFormat,
       horizontalAlign: horizontalAlignVal ?? this._horizontalAlign,
       verticalAlign: verticalAlignVal ?? this._verticalAlign,
       textWrapping: textWrappingVal ?? this._textWrapping,
@@ -147,6 +154,18 @@ class CellStyle extends Equatable {
     _fontFamily = family;
   }
 
+  ///`Get NumFormat`
+  ///
+  String? get numFormat {
+    return _numFormat;
+  }
+
+  ///`Set NumFormat`
+  ///
+  set numFormat(String? format) {
+    _numFormat= format;
+  }
+
   ///Get Font Size
   ///
   int? get fontSize {
@@ -223,6 +242,7 @@ class CellStyle extends Equatable {
         _underline,
         _fontSize,
         _fontFamily,
+        _numFormat,
         _textWrapping,
         _verticalAlign,
         _horizontalAlign,

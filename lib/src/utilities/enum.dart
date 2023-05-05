@@ -23,6 +23,9 @@ enum HorizontalAlign {
   Left,
   Center,
   Right,
+  Fill,
+  Distributed,
+  Justify,
 }
 
 ///

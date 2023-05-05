@@ -176,7 +176,6 @@ class Save {
     final columnCount = max(autoFits.length, customWidths.length);
 
     List<double> colWidths = <double>[];
-    int min = 0;
 
     for (var index = 0; index < columnCount; index++) {
       double value = _defaultColumnWidth;
@@ -193,15 +192,7 @@ class Save {
       }
 
       colWidths.add(value);
-
-      if (index != 0 && colWidths[index - 1] != value) {
-        _addNewCol(cols, min, index - 1, colWidths[index - 1]);
-        min = index;
-      }
-
-      if (index == (columnCount - 1)) {
-        _addNewCol(cols, index, index, value);
-      }
+      _addNewCol(cols, index, index, value);
     }
   }
 
@@ -359,6 +350,19 @@ class Save {
     _innerCellStyle = <CellStyle>[];
     List<String> innerPatternFill = <String>[];
     List<_FontStyle> innerFontStyle = <_FontStyle>[];
+    List<XmlElement> numFmtElements = [];
+
+    if(_excel.numFormats.isNotEmpty){
+      _excel.numFormats.forEach((element) {
+        numFmtElements.add(XmlElement(XmlName('numFmt'), [
+          XmlAttribute(XmlName('numFmtId'), (_excel.numFormats.indexOf(element)+100).toString()),
+          XmlAttribute(XmlName('formatCode'), element)
+        ]));
+      });
+      _excel._xmlFiles['xl/styles.xml']!.findAllElements('styleSheet').first.children.insert(0, 
+        XmlElement(XmlName('numFmts'), [XmlAttribute(XmlName('count'), numFmtElements.length.toString())], numFmtElements)
+      );
+    }
 
     _excel._sheetMap.forEach((sheetName, sheetObject) {
       sheetObject._sheetData.forEach((_, colMap) {
@@ -531,7 +535,8 @@ class Save {
             '${backgroundIndex == -1 ? 0 : backgroundIndex + _excel._patternFill.length}'),
         XmlAttribute(XmlName('fontId'),
             '${fontIndex == -1 ? 0 : fontIndex + _excel._fontStyleList.length}'),
-        XmlAttribute(XmlName('numFmtId'), '0'),
+        if(cellStyle.numFormat!=null)
+          XmlAttribute(XmlName('numFmtId'), (_excel.numFormats.indexOf(cellStyle.numFormat!)+100).toString()),
         XmlAttribute(XmlName('xfId'), '0'),
       ];
 
@@ -570,11 +575,19 @@ class Save {
           childAttributes.add(XmlAttribute(XmlName('vertical'), '$ver'));
         }
 
-        if (horizontalALign != HorizontalAlign.Left) {
-          String hor =
-              horizontalALign == HorizontalAlign.Right ? 'right' : 'center';
-          childAttributes.add(XmlAttribute(XmlName('horizontal'), '$hor'));
-        }
+        String hor = 'left';
+        if (horizontalALign == HorizontalAlign.Right) 
+          hor = 'right';
+        if (horizontalALign == HorizontalAlign.Center) 
+          hor = 'center';
+        if (horizontalALign == HorizontalAlign.Fill) 
+          hor = 'fill';
+        if (horizontalALign == HorizontalAlign.Distributed) 
+          hor = 'distributed';
+        if (horizontalALign == HorizontalAlign.Justify) 
+          hor = 'justify';
+        childAttributes.add(XmlAttribute(XmlName('horizontal'), '$hor'));
+        
         if (rotation != 0) {
           childAttributes
               .add(XmlAttribute(XmlName('textRotation'), '$rotation'));

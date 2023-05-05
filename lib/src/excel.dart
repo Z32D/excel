@@ -39,6 +39,7 @@ class Excel {
   late List<String> _mergeChangeLook;
   late List<String> _rtlChangeLook;
   late List<_FontStyle> _fontStyleList;
+  late List<String> _numFmts;
   late List<int> _numFormats;
 
   late _SharedStringsMaintainer _sharedStrings;
@@ -64,6 +65,7 @@ class Excel {
     _rtlChangeLook = <String>[];
     _fontStyleList = <_FontStyle>[];
     _numFormats = <int>[];
+    _numFmts = <String>[];
     _stylesTarget = '';
     _sharedStringsTarget = '';
 
@@ -505,6 +507,20 @@ class Excel {
     );
 
     return replaceCount;
+  }
+
+  ///
+  /// Set Number Formats
+  ///
+  void addNumFormats(String numFormat) {
+    _numFmts.add(numFormat);
+  }
+
+  ///
+  /// Get Number Formats
+  ///
+  List<String> get numFormats {
+    return _numFmts;
   }
 
   ///
